@@ -1,0 +1,49 @@
+/* navbar:hover 컬러 변경 */
+/* .navbar a:hover,
+.navbar .active,
+.navbar .active:focus,
+.navbar li:hover>a {
+  color: var(--color-cyan);
+} */
+
+/* .navbar a,
+.navbar a:focus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0px 10px 0px;
+  font-family: var(--font-default);
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(var(--color-default-rgb), 1);
+  white-space: nowrap;
+  transition: 0.3s;
+} */
+
+/*네비게이션*/
+
+
+/*마이페이지 작성글 리스트*/
+.table-ws{
+  line-height: 4rem;
+}
+.ws-list-img{
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+}
+.ws-list-hove a:hover{
+  color:var(--color-cyan);
+}
+
+/*마이페이지 회원정보*/
+.ws-myBtn{
+  border:solid black 2px;
+  width:max-content;
+  display: flex;
+  justify-content: center;
+}
+.ws-myBtn:hover{
+  border:solid black 2px;
+  transform: scale(1.03);
+}

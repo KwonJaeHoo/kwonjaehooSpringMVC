@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sist.withSports.dao.BoardDao">
+
+	<resultMap type="com.sist.withSports.model.SpRev" id="SpRevResultMap">
+		<id column="REV_SEQ" property="revSeq"/>
+		<result column="REV_TITLE" property="revTitle"/>
+		<result column="REV_CONTENT" property="revContent"/>
+		<result column="NM_ID" property="nmId"/>
+		<result column="NM_NICKNAME" property="nmNickname"/>
+		<result column="REV_READ_CNT" property="revReadCnt"/>
+		<result column="REV_REG_DATE" property="revRegDate"/>
+		<result column="CO_ID" property="coId"/>
+	</resultMap>
+	
+	<resultMap type="com.sist.withSports.model.SpProm" id="SpPromResultMap">
+		<id column="PROM_SEQ" property="promSeq"/>
+		<result column="PROM_TITLE" property="promTitle"/>
+		<result column="PROM_CONTENT" property="promContent"/>
+		<result column="PROM_REG_DATE" property="promRegDate"/>
+		<result column="PROM_STATUS" property="promStatus"/>
+		<result column="CO_ID" property="coId"/>
+		<result column="CO_NAME" property="coName"/>
+		<result column="CO_EMAIL" property="coEmail"/>
+		<result column="CO_TEL" property="coTel"/>
+		<result column="PROM_MO_SDATE" property="promMoSdate"/>
+		<result column="PROM_MO_EDATE" property="promMoEdate"/>
+		<result column="PROM_CO_SDATE" property="promCoSdate"/>
+		<result column="PROM_CO_EDATE" property="promCoEdate"/>
+		<result column="PROM_CATE" property="promCate"/>
+		<result column="PROM_ADDR" property="promAddr"/>
+		<result column="PROM_PRICE" property="promPrice"/>
+		<result column="PROM_JOIN_CNT" property="promJoinCnt"/>
+		<result column="PROM_LIMIT_CNT" property="promLimitCnt"/>
+		<result column="PROM_READ_CNT" property="promReadCnt"/>
+		<result column="PROM_LIKE_CNT" property="promLikeCnt"/>
+		
+		<result column="PROM_POST_CODE" property="promPostCode"/>
+		<result column="PROM_ROAD_ADDRESS" property="promRoadAddress"/>
+		<result column="PROM_DETAIL_ADDRESS" property="promDetailAddress"/>
+	</resultMap>
+	
+	<resultMap type="com.sist.withSports.model.SpRevFile" id="SpRevFileResultMap">
+		<id column="REV_SEQ" property="revSeq"/>
+		<id column="REV_FILE_SEQ" property="revFileSeq"/>
+		<result column="REV_FILE_ORG_NAME" property="revFileOrgName"/>
+		<result column="REV_FILE_NAME" property="revFileName"/>
+		<result column="REV_FILE_EXT" property="revFileExt"/>
+		<result column="REV_FILE_SIZE" property="revFileSize"/>
+		<result column="REV_REG_DATE" property="revRegDate"/>	
+	</resultMap>
+	
+	<resultMap type="com.sist.withSports.model.SpPromFile" id="SpPromFileResultMap">
+		<id column="PROM_SEQ" property="promSeq"/>
+		<id column="PROM_FILE_SEQ" property="promFileSeq"/>
+		<result column="PROM_FILE_ORG_NAME" property="promFileOrgName"/>
+		<result column="PROM_FILE_NAME" property="promFileName"/>
+		<result column="PROM_FILE_EXT" property="promFileExt"/>
+		<result column="PROM_FILE_SIZE" property="promFileSize"/>
+		<result column="PROM_REG_DATE" property="promRegDate"/>
+	</resultMap>
+	
+	
+	<resultMap type="com.sist.withSports.model.SpLike" id="SpLikeResultMap">
+		<id column="PROM_SEQ" property="promSeq"/>
+		<id column="NM_ID" property="nmId"/>
+		<result column="PROM_TITLE" property="promTitle"/>
+		<result column="PROM_CO_SDATE" property="promCoSdate"/>
+		<result column="PROM_CO_EDATE" property="promCoEdate"/>
+		<result column="PROM_CATE" property="promCate"/>
+	</resultMap>
+	
+	<resultMap type="com.sist.withSports.model.SpRevReply" id="SpRevReplyResultMap">	
+		<id column="REPLY_SEQ" property="replySeq"/>
+		<result column="PROM_SEQ" property="promSeq"/>
+		<result column="NM_ID" property="nmId"/>
+		<result column="REPLY_CONTENT" property="replyContent"/>
+		<result column="REPLY_GROUP" property="replyGroup"/>
+		<result column="REPLY_ORDER" property="replyOrder"/>
+		<result column="REPLY_INDENT" property="replyIndent"/>
+		<result column="REPLY_REG_DATE" property="replyRegDate"/>
+		<result column="REPLY_PARENT" property="replyParent"/>
+	</resultMap>
+	
+	
+	
+	<!-- revList -->
+	<select id="SpRevList" parameterType="com.sist.withSports.model.SpRev" resultMap="SpRevResultMap">
+		SELECT REV_SEQ,
+		       REV_TITLE,
+		       REV_CONTENT,
+		       NM_ID,
+		       NM_NICKNAME,
+		       REV_READ_CNT,
+		       REV_REG_DATE
+		  FROM (SELECT ROWNUM RNUM,
+		               REV_SEQ,
+		               REV_TITLE,
+		               REV_CONTENT,
+		               NM_ID,
+		               NM_NICKNAME,
+		               REV_READ_CNT,
+		               REV_REG_DATE
+		          FROM (SELECT S_R.REV_SEQ,
+		                       NVL(S_R.REV_TITLE, '') REV_TITLE,
+		                       NVL(S_R.REV_CONTENT, '') REV_CONTENT,
+		                       NVL(S_R.NM_ID, '') NM_ID,
+		                       NVL(S_N_U.NM_NICKNAME, '') NM_NICKNAME,
+		                       NVL(S_R.REV_READ_CNT, 0) REV_READ_CNT,
+		                       NVL(TO_CHAR(S_R.REV_REG_DATE, 'YYYY-MM-DD HH24:MI:SS'), '') REV_REG_DATE
+		                  FROM SP_REV S_R, SP_NM_USER S_N_U
+		                 WHERE S_R.NM_ID = S_N_U.NM_ID
+		            <if test='nmId != null and nmId != ""'>    
+		                   AND S_R.NM_ID = #{nmId}
+		            </if> 
+					<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+						<choose>
+							<when test='searchType == "1"'>
+					       AND S_N_U.NM_NICKNAME LIKE '%' || #{searchValue} || '%'
+					        </when>
+					        <when test='searchType == "2"'>    
+					       AND S_R.REV_TITLE LIKE '%' || #{searchValue} || '%'
+					        </when>
+					        <when test='searchType == "3"'>    
+					       AND DBMS_LOB.INSTR(S_R.REV_CONTENT, #{searchValue}) > 0
+					        </when> 
+						</choose>
+					</if>
+					<if test='searchSort != null and searchSort != ""'>    
+		            	<choose>
+		            		<when test='searchSort == "1"'>
+		            		ORDER BY S_R.REV_SEQ DESC))
+		            		</when>
+		            		<when test='searchSort == "2"'>
+		            		ORDER BY S_R.REV_READ_CNT DESC))
+		            		</when>
+		            	</choose>
+					</if> 
+		 WHERE RNUM <![CDATA[>=]]> #{startRow}
+		   AND RNUM <![CDATA[<=]]> #{endRow}
+	</select>
+
+	<select id="SpRevListCount" parameterType="com.sist.withSports.model.SpRev" resultType="long">
+			SELECT COUNT(REV_SEQ)
+	  		  FROM SP_REV S_R, SP_NM_USER S_N_U
+	  		 WHERE S_R.NM_ID = S_N_U.NM_ID
+    	<if test='nmId != null and nmId != ""'>    
+               AND S_R.NM_ID = #{nmId}
+        </if>
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "1"'>
+		       AND S_N_U.NM_NICKNAME LIKE '%' || #{searchValue} || '%'
+		        </when>
+		        <when test='searchType == "2"'>    
+		       AND S_R.REV_TITLE LIKE '%' || #{searchValue} || '%'
+		        </when>
+		        <when test='searchType == "3"'>    
+		       AND DBMS_LOB.INSTR(S_R.REV_CONTENT, #{searchValue}) > 0
+		        </when> 
+			</choose>
+		</if>  		 
+	</select>
+	
+	
+	<update id="SpRevReadCount" parameterType="long">
+		UPDATE SP_REV
+		   SET REV_READ_CNT = REV_READ_CNT + 1
+		WHERE REV_SEQ = #{value}
+	</update>
+	
+	
+	<select id="SpRevSelect" parameterType="long" resultMap="SpRevResultMap">
+		    SELECT S_R.REV_SEQ,
+                       NVL(S_R.REV_TITLE, '') REV_TITLE,
+                       NVL(S_R.REV_CONTENT, '') REV_CONTENT,
+                       NVL(S_R.NM_ID, '') NM_ID,
+                       NVL(S_N_U.NM_NICKNAME, '') NM_NICKNAME,
+                       NVL(S_R.REV_READ_CNT, 0) REV_READ_CNT,
+                       NVL(TO_CHAR(S_R.REV_REG_DATE, 'YYYY-MM-DD HH24:MI:SS'), '') REV_REG_DATE
+                  FROM SP_REV S_R, SP_NM_USER S_N_U
+                 WHERE S_R.NM_ID = S_N_U.NM_ID
+                   AND S_R.REV_SEQ = #{value}
+	</select>
+	
+	<insert id="SpRevInsert" parameterType="com.sist.withSports.model.SpRev">
+		<selectKey resultType="long" keyProperty="revSeq" order="BEFORE">
+			SELECT SEQ_REV_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO SP_REV (REV_SEQ, REV_TITLE, REV_CONTENT, NM_ID, REV_READ_CNT, REV_REG_DATE)
+		VALUES (#{revSeq}, #{revTitle}, #{revContent}, #{nmId}, #{revReadCnt}, SYSDATE)
+	</insert>
+	
+	<update id="SpRevUpdate" parameterType="com.sist.withSports.model.SpRev">
+		UPDATE SP_REV
+		    SET REV_TITLE = #{revTitle},
+		        REV_CONTENT = #{revContent}
+		WHERE REV_SEQ = #{revSeq}
+	</update>
+	
+	<delete id="SpRevDelete" parameterType="long">
+		DELETE FROM SP_REV
+    		  WHERE REV_SEQ = #{value}
+	</delete>
+	
+	<select id="SpRevFileSelect" parameterType="long" resultMap="SpRevFileResultMap">
+		SELECT REV_SEQ,
+		       REV_FILE_SEQ,
+		       NVL(REV_FILE_ORG_NAME, '') REV_FILE_ORG_NAME,
+		       NVL(REV_FILE_NAME, '') REV_FILE_NAME,
+		       NVL(REV_FILE_EXT, '') REV_FILE_EXT,
+		       NVL(REV_FILE_SIZE, 0) REV_FILE_SIZE,
+		       NVL(TO_CHAR(REV_REG_DATE, 'YYYY.MM.DD HH24:MI:SS'), '') REV_REG_DATE
+		  FROM SP_REV_FILE
+		 WHERE REV_SEQ = #{value}
+		   AND REV_FILE_SEQ = 1
+	</select>
+	
+	<insert id="SpRevFileInsert" parameterType="com.sist.withSports.model.SpRevFile">
+		INSERT INTO SP_REV_FILE
+		(REV_SEQ, REV_FILE_SEQ, REV_FILE_ORG_NAME, REV_FILE_NAME, REV_FILE_EXT, REV_FILE_SIZE, REV_REG_DATE) 
+		VALUES (#{revSeq}, #{revFileSeq}, #{revFileOrgName}, #{revFileName}, #{revFileExt}, #{revFileSize}, SYSDATE)
+	</insert>
+
+	<!-- 첨부 파일 삭제 -->
+	<delete id="SpRevFileDelete" parameterType="long">
+		DELETE FROM SP_REV_FILE
+    		  WHERE REV_SEQ = #{value}
+	</delete>
+
+
+
+	<select id="SpLikeList" parameterType="com.sist.withSports.model.SpLike" resultMap="SpLikeResultMap">
+		  SELECT PROM_SEQ,
+		         NM_ID,
+		         PROM_CATE,
+		         PROM_TITLE,
+		         PROM_CO_SDATE,
+		         PROM_CO_EDATE
+		    FROM (SELECT ROWNUM RNUM,
+		                 PROM_SEQ,
+		                 NM_ID,
+		                 PROM_CATE,
+		                 PROM_TITLE,
+		                 PROM_CO_SDATE,
+		                 PROM_CO_EDATE
+		            FROM (SELECT S_L.PROM_SEQ,
+		                         S_L.NM_ID,
+		                         S_P.PROM_CATE,
+		                         S_P.PROM_TITLE,
+		                         TO_CHAR(S_P.PROM_CO_SDATE, 'YYYY-MM-DD') PROM_CO_SDATE,
+		                         TO_CHAR(S_P.PROM_CO_EDATE, 'YYYY-MM-DD') PROM_CO_EDATE
+		                    FROM SP_LIKE S_L, SP_PROM S_P 
+		                   WHERE S_L.PROM_SEQ = S_P.PROM_SEQ
+		                     AND NM_ID = #{nmId}
+		                   ORDER BY PROM_SEQ DESC))
+		   WHERE RNUM <![CDATA[>=]]> #{startRow}
+		     AND RNUM <![CDATA[<=]]> #{endRow}
+	</select>
+
+	<select id="SpLikeCount" parameterType="com.sist.withSports.model.SpLike" resultType="long">
+			SELECT COUNT(PROM_SEQ)
+		      FROM SP_LIKE
+		     WHERE NM_ID = #{nmId} 		 
+	</select>
+
+
+
+
+
+	<!-- promList -->
+	<select id="SpPromList" parameterType="com.sist.withSports.model.SpProm" resultMap="SpPromResultMap">
+		SELECT PROM_SEQ,
+		       PROM_TITLE,
+		       PROM_CONTENT,
+		       PROM_REG_DATE,
+		       PROM_STATUS,
+		       CO_ID,
+		       CO_NAME,
+		       PROM_MO_SDATE,
+		       PROM_MO_EDATE,
+		       PROM_CO_SDATE,
+		       PROM_CO_EDATE,
+		       PROM_CATE,
+		       PROM_ADDR,
+		       PROM_PRICE,
+		       PROM_JOIN_CNT,
+		       PROM_LIMIT_CNT,
+		       PROM_READ_CNT,
+		       PROM_LIKE_CNT
+		  FROM (SELECT ROWNUM RNUM,
+		               PROM_SEQ,
+		               PROM_TITLE,
+		               PROM_CONTENT,
+		               PROM_REG_DATE,
+		               PROM_STATUS,
+		               CO_ID,
+		               CO_NAME,
+		               PROM_MO_SDATE,
+		               PROM_MO_EDATE,
+		               PROM_CO_SDATE,
+		               PROM_CO_EDATE,
+		               PROM_CATE,
+		               PROM_ADDR,
+		               PROM_PRICE,
+		               PROM_JOIN_CNT,
+		               PROM_LIMIT_CNT,
+		               PROM_READ_CNT,
+		               PROM_LIKE_CNT
+		          FROM (SELECT S_P.PROM_SEQ,
+		                       NVL(S_P.PROM_TITLE, '') PROM_TITLE,
+		                       NVL(S_P.PROM_CONTENT, '') PROM_CONTENT,
+		                       NVL(TO_CHAR(S_P.PROM_REG_DATE, 'YYYY-MM-DD HH24:MI:SS'),'') PROM_REG_DATE,
+		                       NVL(S_P.PROM_STATUS, '') PROM_STATUS,
+		                       NVL(S_P.CO_ID, '') CO_ID,
+		                       NVL(S_C_U.CO_NAME, '') CO_NAME,
+		                       NVL(TO_CHAR(S_P.PROM_MO_SDATE, 'YYYY-MM-DD'), '') PROM_MO_SDATE,
+		                       NVL(TO_CHAR(S_P.PROM_MO_EDATE, 'YYYY-MM-DD'), '') PROM_MO_EDATE,
+		                       NVL(TO_CHAR(S_P.PROM_CO_SDATE, 'YYYY-MM-DD'), '') PROM_CO_SDATE,
+		                       NVL(TO_CHAR(S_P.PROM_CO_EDATE, 'YYYY-MM-DD'), '') PROM_CO_EDATE,
+		                       NVL(S_P.PROM_CATE, '') PROM_CATE,
+		                       NVL(S_P.PROM_ADDR, '') PROM_ADDR,
+		                       NVL(S_P.PROM_PRICE, 0) PROM_PRICE,
+		                       NVL(S_P.PROM_JOIN_CNT, 0) PROM_JOIN_CNT,
+		                       NVL(S_P.PROM_LIMIT_CNT, 0) PROM_LIMIT_CNT,
+		                       NVL(S_P.PROM_READ_CNT, 0) PROM_READ_CNT,
+		                       NVL(S_P.PROM_LIKE_CNT, 0) PROM_LIKE_CNT
+		                  FROM SP_PROM S_P, SP_CO_USER S_C_U
+		                 WHERE S_P.CO_ID = S_C_U.CO_ID
+		              <if test='coId != null and coId != ""'>    
+		                   AND S_P.CO_ID = #{coId}
+		              </if>
+		              
+		             <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+						<choose>
+							<when test='searchType == "1"'>
+					       AND S_C_U.CO_NAME LIKE '%' || #{searchValue} || '%'
+					        </when>
+					        <when test='searchType == "2"'>    
+					       AND S_P.PROM_TITLE LIKE '%' || #{searchValue} || '%'
+					        </when>
+					        <when test='searchType == "3"'>    
+					       AND DBMS_LOB.INSTR(S_P.PROM_CONTENT, #{searchValue}) > 0
+					        </when> 
+						</choose>
+					</if>
+					<if test='searchSort != null and searchSort != ""'>    
+		            	<choose>
+		            		<when test='searchSort == "1"'>
+		            		ORDER BY S_P.PROM_SEQ DESC))
+		            		</when>
+		            		<when test='searchSort == "2"'>
+		            		ORDER BY S_P.PROM_LIKE_CNT DESC))
+		            		</when>
+		            		<when test='searchSort == "3"'>
+		            		ORDER BY S_P.PROM_READ_CNT DESC))
+		            		</when>
+		            	</choose>
+					</if>     
+		 WHERE RNUM <![CDATA[>=]]> #{startRow}
+		   AND RNUM <![CDATA[<=]]> #{endRow}            
+	</select>
+	
+	
+	<select id="SpPromListCount" parameterType="com.sist.withSports.model.SpProm" resultType="long">
+			SELECT COUNT(PROM_SEQ)
+	  		  FROM SP_PROM S_P, SP_CO_USER S_C_U
+	  		 WHERE S_P.CO_ID = S_C_U.CO_ID
+     	<if test='coId != null and coId != ""'>    
+               AND S_P.CO_ID = #{coId}
+        </if>	 
+		<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+			<choose>
+				<when test='searchType == "1"'>
+		       AND S_C_U.CO_NAME LIKE '%' || #{searchValue} || '%'
+		        </when>
+		        <when test='searchType == "2"'>    
+		       AND S_P.PROM_TITLE LIKE '%' || #{searchValue} || '%'
+		        </when>
+		        <when test='searchType == "3"'>    
+		       AND DBMS_LOB.INSTR(S_P.PROM_CONTENT, #{searchValue}) > 0
+		        </when> 
+			</choose>
+		</if>    	 
+	</select>
+
+	<update id="SpPromReadCount" parameterType="long">
+		UPDATE SP_PROM
+		   SET PROM_READ_CNT = PROM_READ_CNT + 1
+		WHERE PROM_SEQ = #{value}
+	</update>
+	
+	
+	<select id="SpPromSelect" parameterType="long" resultMap="SpPromResultMap">
+			SELECT S_P.PROM_SEQ,
+                       NVL(S_P.PROM_TITLE, '') PROM_TITLE,
+                       NVL(S_P.PROM_CONTENT, '') PROM_CONTENT,
+                       NVL(TO_CHAR(S_P.PROM_REG_DATE, 'YYYY-MM-DD HH24:MI:SS'),'') PROM_REG_DATE,
+                       NVL(S_P.PROM_STATUS, '') PROM_STATUS,
+                       NVL(S_P.CO_ID, '') CO_ID,
+                       NVL(S_C_U.CO_NAME, '') CO_NAME,
+                       NVL(S_C_U.CO_EMAIL, '') CO_EMAIL,
+                       NVL(S_C_U.CO_TEL, '') CO_TEL,
+                       NVL(TO_CHAR(S_P.PROM_MO_SDATE, 'YYYY-MM-DD'), '') PROM_MO_SDATE,
+                       NVL(TO_CHAR(S_P.PROM_MO_EDATE, 'YYYY-MM-DD'), '') PROM_MO_EDATE,
+                       NVL(TO_CHAR(S_P.PROM_CO_SDATE, 'YYYY-MM-DD'), '') PROM_CO_SDATE,
+                       NVL(TO_CHAR(S_P.PROM_CO_EDATE, 'YYYY-MM-DD'), '') PROM_CO_EDATE,
+                       NVL(S_P.PROM_CATE, '') PROM_CATE,
+                       NVL(S_P.PROM_ADDR, '') PROM_ADDR,
+                       NVL(S_P.PROM_PRICE, 0) PROM_PRICE,
+                       NVL(S_P.PROM_JOIN_CNT, 0) PROM_JOIN_CNT,
+                       NVL(S_P.PROM_LIMIT_CNT, 0) PROM_LIMIT_CNT,
+                       NVL(S_P.PROM_READ_CNT, 0) PROM_READ_CNT,
+                       NVL(S_P.PROM_LIKE_CNT, 0) PROM_LIKE_CNT,
+                       NVL(S_P.PROM_DETAIL_ADDRESS, '') PROM_DETAIL_ADDRESS,
+					   NVL(S_P.PROM_ROAD_ADDRESS, '') PROM_ROAD_ADDRESS,
+					   NVL(S_P.PROM_POST_CODE, '') PROM_POST_CODE
+                  FROM SP_PROM S_P, SP_CO_USER S_C_U
+                 WHERE S_P.CO_ID = S_C_U.CO_ID
+                   AND S_P.PROM_SEQ = #{value}
+	</select>
+	
+	<insert id="SpPromInsert" parameterType="com.sist.withSports.model.SpProm">
+		<selectKey resultType="long" keyProperty="promSeq" order="BEFORE">
+			SELECT SEQ_PROM_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+    INSERT INTO SP_PROM (PROM_SEQ, PROM_TITLE, PROM_CONTENT, PROM_REG_DATE, PROM_STATUS, CO_ID, PROM_MO_SDATE, PROM_MO_EDATE, PROM_CO_SDATE, PROM_CO_EDATE, 
+                         PROM_CATE, PROM_ADDR, PROM_PRICE, PROM_JOIN_CNT, PROM_LIMIT_CNT, PROM_READ_CNT, PROM_LIKE_CNT,PROM_POST_CODE, PROM_ROAD_ADDRESS, PROM_DETAIL_ADDRESS)
+		VALUES (#{promSeq}, #{promTitle}, #{promContent}, SYSDATE, #{promStatus}, #{coId}, #{promMoSdate}, #{promMoEdate}, #{promCoSdate}, #{promCoEdate},
+			    #{promCate}, #{promAddr}, #{promPrice}, #{promJoinCnt}, #{promLimitCnt}, #{promReadCnt}, #{promLikeCnt}, #{promPostCode}, #{promRoadAddress}, #{promDetailAddress})
+	</insert>
+	
+	<update id="SpPromUpdate" parameterType="com.sist.withSports.model.SpProm">
+		UPDATE SP_PROM
+		   SET PROM_TITLE = #{promTitle},
+               PROM_CONTENT = #{promContent},
+               PROM_ADDR = #{promAddr},
+               PROM_POST_CODE = #{promPostCode},
+               PROM_ROAD_ADDRESS = #{promRoadAddress},
+               PROM_DETAIL_ADDRESS = #{promDetailAddress}
+		 WHERE PROM_SEQ = #{promSeq}
+	</update>
+	
+	<select id="SpPromFileSelect" parameterType="long" resultMap="SpPromFileResultMap">
+		SELECT PROM_SEQ,
+		       PROM_FILE_SEQ,
+		       NVL(PROM_FILE_ORG_NAME, '') PROM_FILE_ORG_NAME,
+		       NVL(PROM_FILE_NAME, '') PROM_FILE_NAME,
+		       NVL(PROM_FILE_EXT, '') PROM_FILE_EXT,
+		       NVL(PROM_FILE_SIZE, 0) PROM_FILE_SIZE,
+		       NVL(TO_CHAR(PROM_REG_DATE, 'YYYY.MM.DD HH24:MI:SS'), '') PROM_REG_DATE
+		  FROM SP_PROM_FILE
+		 WHERE PROM_SEQ = #{value}
+		   AND PROM_FILE_SEQ = 1	
+	</select>
+	
+	<insert id="SpPromFileInsert" parameterType="com.sist.withSports.model.SpPromFile">
+		INSERT INTO SP_PROM_FILE
+		(PROM_SEQ, PROM_FILE_SEQ, PROM_FILE_ORG_NAME, PROM_FILE_NAME, PROM_FILE_EXT, PROM_FILE_SIZE, PROM_REG_DATE) 
+		VALUES (#{promSeq}, #{promFileSeq}, #{promFileOrgName}, #{promFileName}, #{promFileExt}, #{promFileSize}, SYSDATE)
+	</insert>
+
+	<!-- 첨부 파일 삭제 -->
+	<delete id="SpPromFileDelete" parameterType="long">
+		DELETE FROM SP_PROM_FILE
+    		  WHERE PROM_SEQ = #{value}
+	</delete>
+	
+	<select id="SpPromViewLikeSelect" resultMap="SpLikeResultMap">
+		SELECT PROM_SEQ,
+	           NM_ID
+	      FROM SP_LIKE
+	     WHERE PROM_SEQ = #{arg0}
+	       AND NM_ID = #{arg1}
+	</select>
+	
+	<insert id="SpPromViewLikeInsert" parameterType="com.sist.withSports.model.SpLike">
+	    INSERT INTO SP_LIKE (PROM_SEQ, NM_ID) 
+	    VALUES (#{promSeq}, #{nmId})
+	</insert>
+	
+	<delete id="SpPromViewLikeDelete" parameterType="com.sist.withSports.model.SpLike">
+		DELETE FROM SP_LIKE
+	     WHERE PROM_SEQ = #{promSeq}
+	       AND NM_ID = #{nmId}
+	</delete>
+	
+	<update id="SpPromViewLikeCntInsertUpdate" parameterType="com.sist.withSports.model.SpProm">
+	    UPDATE SP_PROM 
+	       SET PROM_LIKE_CNT = PROM_LIKE_CNT + 1
+	     WHERE PROM_SEQ = #{promSeq}
+	</update>
+	
+	<update id="SpPromViewLikeCntDeleteUpdate" parameterType="com.sist.withSports.model.SpProm">
+	    UPDATE SP_PROM 
+	       SET PROM_LIKE_CNT = PROM_LIKE_CNT - 1
+	     WHERE PROM_SEQ = #{promSeq}
+	</update>
+	
+
+	<update id="SpPromViewJoinInsertCntUpdate" parameterType="com.sist.withSports.model.SpProm">
+		UPDATE SP_PROM 
+		   SET PROM_JOIN_CNT = PROM_JOIN_CNT + 1
+		 WHERE PROM_SEQ = #{promSeq}
+ 	</update>
+ 	
+ 	<update id="SpPromViewJoinDeleteCntUpdate" parameterType="com.sist.withSports.model.SpProm">
+		UPDATE SP_PROM 
+		   SET PROM_JOIN_CNT = PROM_JOIN_CNT - 1
+		 WHERE PROM_SEQ = #{promSeq}
+ 	</update>
+	
+	<insert id="SpRevReplyInsert" parameterType="com.sist.withSports.model.SpRevReply">
+		<selectKey resultType="long" keyProperty="replySeq" order="BEFORE">
+			SELECT SEQ_REV_REPLY_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+	
+		INSERT INTO SP_REV_REPLY (REPLY_SEQ, REV_SEQ, NM_ID, REPLY_CONTENT, REPLY_GROUP, REPLY_ORDER, REPLY_INDENT, REPLY_REG_DATE, REPLY_PARENT) 
+		VALUES (#{replySeq}, #{revSeq}, #{nmId}, #{replyContent}, #{replyGroup}, #{replyOrder}, #{replyIndent}, SYSDATE, #{replyParent})
+	</insert>
+	
+</mapper>

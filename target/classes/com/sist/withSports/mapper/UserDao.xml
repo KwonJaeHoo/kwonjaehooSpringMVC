@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sist.withSports.dao.UserDao">
+
+	<resultMap type="com.sist.withSports.model.SpNmUser" id="SpNmUserResultMap">
+		<id column="NM_ID" property="nmId" />
+		<result column="NM_PWD" property="nmPwd" />
+		<result column="NM_NAME" property="nmName" />
+		<result column="NM_NICKNAME" property="nmNickname" />
+		<result column="NM_EMAIL" property="nmEmail" />
+		<result column="NM_TEL" property="nmTel" />
+		<result column="NM_DATE" property="nmDate" />
+		<result column="NM_STATUS" property="nmStatus" />
+	</resultMap>	
+
+	<resultMap type="com.sist.withSports.model.SpCoUser" id="SpCoUserResultMap">
+		<id column="CO_ID" property="coId" />
+		<result column="CO_PWD" property="coPwd" />
+		<result column="CO_NAME" property="coName" />
+		<result column="CO_CEO" property="coCeo" />
+		<result column="CO_NUM" property="coNum" />
+		<result column="CO_ADDR" property="coAddr" />
+		<result column="CO_TEL" property="coTel" />
+		<result column="CO_EMAIL" property="coEmail" />
+		<result column="CO_DATE" property="coDate" />
+		<result column="CO_STATUS" property="coStatus" />
+	</resultMap>
+
+
+	<!-- user -->	
+	
+	<select id="SpNmNicknameSelect" parameterType="String" resultType="int">
+		SELECT COUNT(NM_NICKNAME) CNT      
+		  FROM SP_NM_USER
+		 WHERE NM_NICKNAME = #{value}
+	</select>
+	
+	<select id="SpNmEmailSelect" parameterType="String" resultType="int">
+		SELECT COUNT(NM_EMAIL) CNT      
+		  FROM SP_NM_USER
+		 WHERE NM_EMAIL = #{value}
+	</select>
+	
+	<select id="SpNmTelSelect" parameterType="String" resultType="int">
+		SELECT COUNT(NM_TEL) CNT      
+		  FROM SP_NM_USER
+		 WHERE NM_TEL = #{value}
+	</select>
+	
+	<select id="SpNmIdPwdFind" parameterType="com.sist.withSports.model.SpNmUser" resultType="String">
+		SELECT NM_ID
+		  FROM SP_NM_USER
+		 WHERE NM_NAME = #{nmName}	
+		   AND NM_EMAIL = #{nmEmail}
+		<if test='nmId != null and nmId != ""'>  
+		   AND NM_ID = #{nmId}
+		</if>
+	</select>
+	
+	<update id="SpNmPwdFindChange" parameterType="com.sist.withSports.model.SpNmUser">
+		UPDATE SP_NM_USER
+		   SET NM_PWD = #{nmPwd}
+		 WHERE NM_ID = #{nmId}
+	</update>
+
+	<select id="SpNmUserSelect" parameterType="String" resultMap="SpNmUserResultMap">
+		SELECT NM_ID,
+		       NVL(NM_PWD, '') NM_PWD,
+		       NVL(NM_NAME, '') NM_NAME,
+		       NVL(NM_NICKNAME, '') NM_NICKNAME,
+		       NVL(NM_EMAIL, '') NM_EMAIL,
+		       NVL(NM_TEL, '') NM_TEL,
+		       NVL(TO_CHAR(NM_DATE, 'YYYY-MM-DD HH24:MI:SS'), '') NM_DATE,
+		       NVL(NM_STATUS, 'N') NM_STATUS
+		  FROM SP_NM_USER
+		 WHERE NM_ID = #{value}
+	</select>
+
+	<insert id="SpNmUserInsert" parameterType="com.sist.withSports.model.SpNmUser">
+		INSERT INTO SP_NM_USER (NM_ID, NM_PWD, NM_NAME, NM_NICKNAME, NM_EMAIL, NM_TEL, NM_DATE, NM_STATUS) 
+		VALUES (#{nmId}, #{nmPwd}, #{nmName}, #{nmNickname}, #{nmEmail}, #{nmTel}, SYSDATE, #{nmStatus})
+	</insert>
+
+	<update id="SpNmUserUpdate" parameterType="com.sist.withSports.model.SpNmUser">
+		UPDATE SP_NM_USER
+		   SET NM_PWD = #{nmPwd}
+		<if test='nmNickname != null and nmNickname != ""'>     	
+		   	,NM_NICKNAME = #{nmNickname}
+		</if>
+		<if test='nmEmail != null and nmEmail != ""'>     	
+		   	,NM_EMAIL = #{nmEmail}
+		</if>
+		<if test='nmTel != null and nmTel != ""'>  
+		   	,NM_TEL = #{nmTel}
+		</if>  	
+		 WHERE NM_ID = #{nmId}
+	</update>
+	
+	<update id="SpNmUserSignOut" parameterType="com.sist.withSports.model.SpNmUser">
+		UPDATE SP_NM_USER
+		   SET NM_STATUS = 'S'
+		 WHERE NM_ID = #{nmId}
+	</update>
+	
+	<!-- company -->	
+	
+	
+	<select id="SpCoNumSelect" parameterType="String" resultType="int">
+		SELECT COUNT(CO_NUM) CNT      
+		  FROM SP_CO_USER
+		 WHERE CO_NUM = #{value}
+	</select>
+	
+	<select id="SpCoAddrSelect" parameterType="String" resultType="int">
+		SELECT COUNT(CO_ADDR) CNT      
+		  FROM SP_CO_USER
+		 WHERE CO_ADDR = #{value}
+	</select>
+	
+	<select id="SpCoTelSelect" parameterType="String" resultType="int">
+		SELECT COUNT(CO_TEL) CNT      
+		  FROM SP_CO_USER
+		 WHERE CO_TEL = #{value}
+	</select>
+	
+	<select id="SpCoEmailSelect" parameterType="String" resultType="int">
+		SELECT COUNT(CO_EMAIL) CNT      
+		  FROM SP_CO_USER
+		 WHERE CO_EMAIL = #{value}
+	</select>
+	
+	
+	<select id="SpCoUserSelect" parameterType="String" resultMap="SpCoUserResultMap">
+		SELECT CO_ID,
+		       NVL(CO_PWD, '') CO_PWD,
+		       NVL(CO_NAME, '') CO_NAME,
+		       NVL(CO_CEO, '') CO_CEO,
+		       NVL(CO_NUM, '') CO_NUM,
+		       NVL(CO_ADDR, '') CO_ADDR,
+		       NVL(CO_TEL, '') CO_TEL,
+		       NVL(CO_EMAIL, '') CO_EMAIL,
+		       NVL(TO_CHAR(CO_DATE, 'YYYY-MM-DD HH24:MI:SS'), '') CO_DATE,
+		       NVL(CO_STATUS, '') CO_STATUS
+		  FROM SP_CO_USER
+		 WHERE CO_ID = #{value}
+	</select>
+
+	<insert id="SpCoUserInsert" parameterType="com.sist.withSports.model.SpCoUser">
+		INSERT INTO SP_CO_USER (CO_ID, CO_PWD, CO_NAME, CO_CEO, CO_NUM, CO_ADDR, CO_TEL, CO_EMAIL, CO_DATE, CO_STATUS) 
+		VALUES (#{coId}, #{coPwd}, #{coName}, #{coCeo}, #{coNum}, #{coAddr}, #{coTel}, #{coEmail}, SYSDATE, #{coStatus})
+	</insert>
+</mapper>

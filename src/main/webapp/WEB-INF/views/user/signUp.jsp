@@ -544,8 +544,35 @@ $(document).ready(function()
 			return;
 		}
 		
+		
 //---------------------------------------------------------------
 
+		if($.trim($("#coEmail").val()).length <= 0)
+		{
+			alert("이메일을 입력해 주세요.");
+			$("#coEmail").val("");
+			$("#coEmail").focus();
+			return;
+		}
+
+		if(emptyCheck.test($("#coEmail").val()))
+		{
+			alert("이메일에 공백을 넣을 수 없습니다.");
+			$("#coEmail").val("");
+			$("#coEmail").focus();
+			return;
+		}
+
+		if(!emailCheck.test($("#coEmail").val()))
+		{
+			alert("이메일 형식이 올바르지 않습니다.");
+			$("#coEmail").val("");
+			$("#coEmail").focus();
+			return;
+		}
+
+//---------------------------------------------------------------
+		
 		if(confirm("회원가입을 진행하시겠어요?"))
 		{
 			if($("#coIdCheck").val() == $("#coId").val())
@@ -818,7 +845,7 @@ function co_signUp()
 			    <div class="input__block">
 			       	<input type="email" placeholder="기업 이메일" class="input" id="coEmail"/>
 			       	<div class="ws_input">
-			       		<small> 전화번호는 하이픈(-)까지 입력해주세요. ex) 010-1234-5678</small>
+			       		<small> 이메일은 형식에 맞게 입력해주세요. ex) withSports@example.com</small>
 			       	</div>
 			    </div>
 			    <!-- sign in button -->

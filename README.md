@@ -7,17 +7,17 @@
 
 <p align="left">
    <a> 쌍용강북교육센터에서 SpringMVC 수업 진행 후 개인 프로젝트를 진행 하는 과정을 통해 제작하게 되었습니다. </a>
-   <a>단, java code는 개인, 주제선정 및 ERD, CSS는 팀원을 갖추어 같은 주제 및 데이터로 진행했습니다. </a>
+   <a>back-end java code, sql문장은 개인으로 작업하였고, 주제, ERD, CSS는 팀원과 의견조율 후 같은 데이터로 진행했습니다. </a>
 </p>
 <p align="left">
   <h4>어떤 홈페이지이고, 이 주제를 선정하게 된 이유는?</h4> 
   <a>
-    
+    결제, 지도 api, 이메일 인증 활용 및 springMVC 메커니즘 학습
+     
   </a>
 </p>  
 <p align="left">
-   <a>교육센터 이수 후 추후 코드 리뷰 시 부족한 점 및 오류부분을 발견하여
-     코드 추가 및 개선을 위해 2차 수정을 진행 하였습니다.  </a>
+   <a>교육센터 이수 후 코드 리뷰 시 부족한 점, 오류들을 발견하여 개선작업을 위해 2차 수정을 진행 하였습니다. </a>
 </p>
 
 ## 개발기간
@@ -34,7 +34,6 @@
       <img alt="withSportsERD" src="https://github.com/user-attachments/assets/62cc16fa-2cb1-483b-8de9-5e0f312fe6db" />
       https://www.erdcloud.com/d/TJ68m4z9nZHTcBp25
    </p>
-
 
 ## 홈페이지 소개
    

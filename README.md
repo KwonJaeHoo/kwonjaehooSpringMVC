@@ -1,7 +1,10 @@
 ## 쌍용강북교육센터 개인 프로젝트 (withSports)
+<p>
+   <img alt="main" src="https://github.com/user-attachments/assets/b935477b-8db8-4511-a235-a0638a3fa76e" />   
+</p>
 
 ## 
-
+<a>notion : </a>  https://magical-office-b9e.notion.site/WithSports-1251e879d34c80dc9f32ed2dc1b4f195
 
 ## 프로젝트 소개
 
